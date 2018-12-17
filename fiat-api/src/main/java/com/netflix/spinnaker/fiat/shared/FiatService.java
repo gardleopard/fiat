@@ -17,6 +17,7 @@
 package com.netflix.spinnaker.fiat.shared;
 
 import com.netflix.spinnaker.fiat.model.UserPermission;
+import com.netflix.spinnaker.fiat.model.resources.ServiceAccount;
 import com.squareup.okhttp.Response;
 import org.springframework.http.ResponseEntity;
 import retrofit.http.Body;
@@ -99,4 +100,13 @@ public interface FiatService {
    */
   @DELETE("/roles/{userId}")
   Response logoutUser(@Path("userId") String userId);
+
+  /**
+   * @param serviceAccountName The name of the service account
+   * @return A map with "status": "[success/failure]".
+   */
+
+  @PUT("/serviceAccounts/{serviceAccountName}")
+  Map<String, String> createServiceAccount(@Path("serviceAccountName") String serviceAccountName, @Body Collection<String> memberOf );
+
 }

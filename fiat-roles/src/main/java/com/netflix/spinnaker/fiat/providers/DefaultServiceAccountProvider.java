@@ -83,4 +83,22 @@ public class DefaultServiceAccountProvider extends BaseProvider<ServiceAccount> 
   public Set<ServiceAccount> getAllUnrestricted() throws ProviderException {
     return Collections.emptySet();
   }
+
+  @Override
+  public Set<ServiceAccount> addItem(ServiceAccount serviceAccount) {
+    Set<ServiceAccount> serviceAccountSet = getAll();
+    if (serviceAccountSet == null) {
+      log.error("The service account cache is empty. (This is ok if you do not have any service accounts at all.)");
+      serviceAccountSet = new HashSet<>();
+    }
+    Set<ServiceAccount> serviceAccountSetMutable = new HashSet<>(serviceAccountSet);
+    if (serviceAccountSetMutable.contains(serviceAccount)) {
+      log.info("We already have \"{}\" removing it as it might be stale.", serviceAccount.getName());
+      serviceAccountSetMutable.remove(serviceAccount);
+    }
+    log.info("Inserting serviceAccount {} to cache", serviceAccount.getName());
+    serviceAccountSetMutable.add(serviceAccount);
+    cache.put(CACHE_KEY, serviceAccountSetMutable);
+    return serviceAccountSetMutable;
+  }
 }
