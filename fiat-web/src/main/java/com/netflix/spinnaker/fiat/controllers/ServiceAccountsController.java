@@ -5,10 +5,10 @@ import com.netflix.spinnaker.fiat.providers.ResourceProvider;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import retrofit.http.Body;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
@@ -25,13 +25,11 @@ public class ServiceAccountsController {
     this.serviceAccountResourceProvider = serviceAccountResourceProvider;
   }
   @RequestMapping(value = "/{serviceAccountName:.+}", method = RequestMethod.PUT)
-  public Map<String, String> updateApplication(@PathVariable String serviceAccountName, @Body @NonNull List<String> memberOf, HttpServletResponse response) {
+  public Map<String, String> updateApplication(@PathVariable String serviceAccountName, @RequestBody @NonNull List<String> memberOf, HttpServletResponse response) {
     ServiceAccount serviceAccount = new ServiceAccount();
     serviceAccount.setName(serviceAccountName);
     serviceAccount.setMemberOf(memberOf);
     log.info("Updating serviceAccount {}", serviceAccountName);
-    //Application app = front50Service.getApplicationPermissions(applicationName.toLowerCase());
-    //      fiatService.createServiceAccount(serviceAccount.name, serviceAccount)
 
     serviceAccountResourceProvider.addItem(serviceAccount);
     return Collections.singletonMap("status", "success");
